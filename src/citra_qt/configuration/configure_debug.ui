@@ -86,7 +86,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout1">
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
@@ -100,7 +100,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout2">
         <item>
          <widget class="QCheckBox" name="toggle_console">
           <property name="text">
@@ -117,6 +117,16 @@
         </item>
        </layout>
       </item>
+      <item>
+        <widget class="QCheckBox" name="instant_debug_log">
+          <property name="text">
+            <string>Flush log output on every message</string>
+          </property>
+          <property name="toolTip">
+            <string>&lt;html&gt;&lt;body&gt;Immediately commits the debug log to file. Use this if citra crashes and the log output is being cut.&lt;br&gt;Enabling this feature will decrease performance, only use it for debugging purposes.&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+        </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -125,7 +135,7 @@
      <property name="title">
       <string>CPU</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="clock_speed_GLayout">
       <item row="1" column="0">
        <widget class="QWidget" name="clock_speed_widget" native="true">
         <layout class="QHBoxLayout" name="clock_speed_layout">

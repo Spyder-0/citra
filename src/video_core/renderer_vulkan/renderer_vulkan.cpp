@@ -73,6 +73,7 @@ RendererVulkan::RendererVulkan(Core::System& system, Pica::PicaCore& pica_,
 RendererVulkan::~RendererVulkan() {
     vk::Device device = instance.GetDevice();
     scheduler.Finish();
+    main_window.WaitPresent();
     device.waitIdle();
 
     device.destroyShaderModule(present_vertex_shader);
@@ -105,6 +106,7 @@ void RendererVulkan::PrepareRendertarget() {
 
         const auto color_fill = fb_id == 0 ? regs_lcd.color_fill_top : regs_lcd.color_fill_bottom;
         if (color_fill.is_enabled) {
+            screen_infos[i].image_view = texture.image_view;
             FillScreen(color_fill.AsVector(), texture);
             continue;
         }

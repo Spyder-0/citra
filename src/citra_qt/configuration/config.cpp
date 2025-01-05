@@ -327,6 +327,8 @@ void Config::ReadCameraValues() {
 void Config::ReadControlValues() {
     qt_config->beginGroup(QStringLiteral("Controls"));
 
+    ReadBasicSetting(Settings::values.use_artic_base_controller);
+
     int num_touch_from_button_maps =
         qt_config->beginReadArray(QStringLiteral("touch_from_button_maps"));
 
@@ -492,6 +494,7 @@ void Config::ReadDebuggingValues() {
     ReadBasicSetting(Settings::values.gdbstub_port);
     ReadBasicSetting(Settings::values.renderer_debug);
     ReadBasicSetting(Settings::values.dump_command_buffers);
+    ReadBasicSetting(Settings::values.instant_debug_log);
 
     qt_config->beginGroup(QStringLiteral("LLE"));
     for (const auto& service_module : Service::service_module_map) {
@@ -636,6 +639,8 @@ void Config::ReadPathValues() {
                 UISettings::values.game_dirs.append(game_dir);
             }
         }
+        UISettings::values.last_artic_base_addr =
+            ReadSetting(QStringLiteral("last_artic_base_addr"), QString{}).toString();
         UISettings::values.recent_files = ReadSetting(QStringLiteral("recentFiles")).toStringList();
         UISettings::values.language = ReadSetting(QStringLiteral("language"), QString{}).toString();
     }
@@ -664,6 +669,8 @@ void Config::ReadRendererValues() {
 
     ReadGlobalSetting(Settings::values.texture_filter);
     ReadGlobalSetting(Settings::values.texture_sampling);
+
+    ReadGlobalSetting(Settings::values.delay_game_render_thread_us);
 
     if (global) {
         ReadBasicSetting(Settings::values.use_shader_jit);
@@ -706,6 +713,7 @@ void Config::ReadSystemValues() {
         ReadBasicSetting(Settings::values.init_time_offset);
         ReadBasicSetting(Settings::values.init_ticks_type);
         ReadBasicSetting(Settings::values.init_ticks_override);
+        ReadBasicSetting(Settings::values.steps_per_hour);
         ReadBasicSetting(Settings::values.plugin_loader_enabled);
         ReadBasicSetting(Settings::values.allow_plugin_loader);
     }
@@ -920,6 +928,8 @@ void Config::SaveCameraValues() {
 void Config::SaveControlValues() {
     qt_config->beginGroup(QStringLiteral("Controls"));
 
+    WriteBasicSetting(Settings::values.use_artic_base_controller);
+
     WriteSetting(QStringLiteral("profile"), Settings::values.current_input_profile_index, 0);
     qt_config->beginWriteArray(QStringLiteral("profiles"));
     for (std::size_t p = 0; p < Settings::values.input_profiles.size(); ++p) {
@@ -1023,6 +1033,7 @@ void Config::SaveDebuggingValues() {
     WriteBasicSetting(Settings::values.use_gdbstub);
     WriteBasicSetting(Settings::values.gdbstub_port);
     WriteBasicSetting(Settings::values.renderer_debug);
+    WriteBasicSetting(Settings::values.instant_debug_log);
 
     qt_config->beginGroup(QStringLiteral("LLE"));
     for (const auto& service_module : Settings::values.lle_modules) {
@@ -1135,6 +1146,8 @@ void Config::SavePathValues() {
             WriteSetting(QStringLiteral("expanded"), game_dir.expanded, true);
         }
         qt_config->endArray();
+        WriteSetting(QStringLiteral("last_artic_base_addr"),
+                     UISettings::values.last_artic_base_addr, QString{});
         WriteSetting(QStringLiteral("recentFiles"), UISettings::values.recent_files);
         WriteSetting(QStringLiteral("language"), UISettings::values.language, QString{});
     }
@@ -1163,6 +1176,8 @@ void Config::SaveRendererValues() {
 
     WriteGlobalSetting(Settings::values.texture_filter);
     WriteGlobalSetting(Settings::values.texture_sampling);
+
+    WriteGlobalSetting(Settings::values.delay_game_render_thread_us);
 
     if (global) {
         WriteSetting(QStringLiteral("use_shader_jit"), Settings::values.use_shader_jit.GetValue(),
@@ -1205,6 +1220,7 @@ void Config::SaveSystemValues() {
         WriteBasicSetting(Settings::values.init_time_offset);
         WriteBasicSetting(Settings::values.init_ticks_type);
         WriteBasicSetting(Settings::values.init_ticks_override);
+        WriteBasicSetting(Settings::values.steps_per_hour);
         WriteBasicSetting(Settings::values.plugin_loader_enabled);
         WriteBasicSetting(Settings::values.allow_plugin_loader);
     }
